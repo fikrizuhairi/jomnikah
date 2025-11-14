@@ -53,18 +53,117 @@
     section{ scroll-snap-align:start; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; position:relative; }
     .content{ background:rgba(255,255,255,0.92); backdrop-filter:blur(6px); border-radius:16px; padding:24px; box-shadow:0 8px 20px rgba(0,0,0,0.05); position:relative; z-index:2; margin:20px; max-width:420px; }
 
-    /* FULLWIDTH variant for intro panel */
-    .content.fullwidth {
-      max-width: 100% !important;
-      width: 100% !important;
-      margin: 0 !important;
-      border-radius: 0 !important;
-      padding: 28px 20px !important;
-      background: rgba(255,255,255,0.92) !important;
-      backdrop-filter: blur(6px) !important;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.05) !important;
-      position: relative;
-      z-index: 2;
+ /* ===== Fullwidth intro background + FULL SCREEN HEIGHT ===== */
+.content.fullwidth {
+  position: relative;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+
+  /* tinggi penuh skrin */
+  min-height: 100vh;
+
+  padding: calc(env(safe-area-inset-top) + 40px) 20px 50px;
+  border-radius: 0 !important;
+
+  /* 2-layer background */
+  background-image: 
+    url("https://invitation-v2.mymawaddah.com/storage/wedapp-invitation/design/fr0042/ctQB591755233073171FR0042(1).png"),
+    url("https://invitation-v2.mymawaddah.com/storage/wedapp-invitation/design/fr0042/6jgvkT17552257093998.jpg");
+    
+
+  background-position:
+    center center,
+    center center;
+
+  background-repeat:
+    no-repeat,
+    no-repeat;
+
+  background-size:
+    cover,
+    cover;
+
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.content.fullwidth {
+  /* kod sedia ada di sini */
+}
+
+/* ===== NAMA VERTICAL (Isma / & / Fikri) ===== */
+.content.fullwidth .nama-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.content.fullwidth .nama-vertical .nama {
+  font-family: 'FlashFont', serif;
+  font-size: 54px;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 3px 10px rgba(0,0,0,0.45);
+}
+
+.content.fullwidth .nama-vertical .and {
+  font-family: 'Playfair Display', serif;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 3px 10px rgba(0,0,0,0.45);
+}
+
+/* --- Force perfect centering of intro text --- */
+.content.fullwidth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;     /* center horizontally */
+  justify-content: center; /* center vertically */
+  text-align: center;
+}
+
+/* remove extra spacing from .intro-text and ensure its children center */
+.content.fullwidth .intro-text {
+  width: 100%;
+  margin: 0;
+  padding: 0;              /* padding controlled by .content.fullwidth */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;               /* space between WALIMATULURUS, names, date */
+}
+
+/* small header */
+.content.fullwidth .kecil {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+  margin: 0;
+}
+
+/* date & venue */
+.content.fullwidth .tarikh,
+.content.fullwidth .lokasi {
+  margin: 0;
+  font-size: 15px;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+}
+
+/* tighten vertical stack spacing if needed */
+.content.fullwidth .nama-vertical { margin: 0; }
+
+
+
       /* respect notch/safe-area at top */
       padding-top: calc(env(safe-area-inset-top) + 18px);
     }
@@ -240,16 +339,24 @@
   <!-- MAIN SCROLLING CONTENT -->
   <div class="app" id="appRoot" aria-hidden="false">
     <!-- INTRO: fullwidth content panel (UPDATED) -->
+    
     <section>
-      <div class="content fullwidth" id="introCard" aria-hidden="false">
-        <div class="intro-text">
-          <div class="kecil">WALIMATULURUS</div><br><br><br>
-          <div class="besar"><span>Isma</span><span>&amp;</span><span>Fikri</span></div><br><br><br>
-          <div class="tarikh">03 JANUARI 2026 | SABTU</div>
-          <div class="lokasi">WHITE HOUSE EVENT SPACE, DUNGUN</div>
-        </div>
+  <div class="content fullwidth" id="introCard" aria-hidden="false">
+    <div class="intro-text">
+      <div class="kecil">WALIMATULURUS</div>
+
+      <div class="nama-vertical">
+        <div class="nama">Isma</div>
+        <div class="and">&amp;</div>
+        <div class="nama">Fikri</div>
       </div>
-    </section>
+
+      <div class="tarikh">03 JANUARI 2026 | SABTU</div>
+      <div class="lokasi">WHITE HOUSE EVENT SPACE, DUNGUN</div>
+    </div>
+  </div>
+</section>
+
 
     <section>
       <div id="mainCard" aria-hidden="false" style="background:transparent; box-shadow:none; border-radius:16px; margin:20px; max-width:420px;">
