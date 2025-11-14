@@ -47,60 +47,29 @@
       object-position: center center;
       display: block;
     }
-    
-    /* Kekalkan rupa .content walaupun class .content dibuang */
-/*#mainCard {
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(6px);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-  position: relative;
-  z-index: 2;
-  margin: 20px;
-  max-width: 420px;
-}*/
-
-#mainSectionInner {
-  margin: 20px;
-  max-width: 420px;
-}
-
-
-
-/* Samakan gaya kotak intro dengan mainCard */
-#introCard {
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(6px);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-  margin: 20px;
-  max-width: 420px;
-  width: calc(100% - 40px);
-}
-
-
 
     /* ---------- MAIN APP (scrolls above fixed bg) ---------- */
     .app{ max-width:420px; margin:auto; position:relative; min-height:100vh; scroll-snap-type:y mandatory; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:140px; z-index:1; }
     section{ scroll-snap-align:start; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; position:relative; }
-    
     .content{ background:rgba(255,255,255,0.92); backdrop-filter:blur(6px); border-radius:16px; padding:24px; box-shadow:0 8px 20px rgba(0,0,0,0.05); position:relative; z-index:2; margin:20px; max-width:420px; }
-    
-    /* Intro content full up to notch */
-#introCard {
-  margin-top: 0 !important;
-  padding-top: env(safe-area-inset-top) !important;
-  border-radius: 0 !important;
-}
 
-section:first-of-type {
-  padding-top: 0 !important;
-}
+    /* FULLWIDTH variant for intro panel */
+    .content.fullwidth {
+      max-width: 100% !important;
+      width: 100% !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
+      padding: 28px 20px !important;
+      background: rgba(255,255,255,0.92) !important;
+      backdrop-filter: blur(6px) !important;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05) !important;
+      position: relative;
+      z-index: 2;
+      /* respect notch/safe-area at top */
+      padding-top: calc(env(safe-area-inset-top) + 18px);
+    }
 
-
-    .intro-text{ position:relative; text-align:center; color:#cc5500; z-index:2; text-shadow:2px 2px 4px rgba(0,0,0,0.25); padding-top:80px; padding-bottom:40px; }
+    .intro-text{ position:relative; text-align:center; color:#cc5500; z-index:2; text-shadow:2px 2px 4px rgba(0,0,0,0.25); padding-top:18px; padding-bottom:18px; }
     .intro-text .kecil{ font-family:'Playfair Display',serif; font-size:18px; color:#000; margin-bottom:6px; font-weight:400 }
     .intro-text .besar{ font-family:'FlashFont',serif; font-size:40px; font-weight:700; letter-spacing:1px; line-height:1.2 }
     .intro-text .tarikh{ font-family:'Poppins',sans-serif; font-size:16px; color:#222; margin-top:10px; font-weight:500 }
@@ -190,8 +159,6 @@ section:first-of-type {
       transition: opacity var(--overlay-fade-ms) ease;
       pointer-events: auto;
     }
-    #openingOverlay.fade-out { opacity:0; pointer-events:none; }
-
     .glass-panel {
       position: absolute;
       top: 0;
@@ -272,80 +239,72 @@ section:first-of-type {
 
   <!-- MAIN SCROLLING CONTENT -->
   <div class="app" id="appRoot" aria-hidden="false">
+    <!-- INTRO: fullwidth content panel (UPDATED) -->
     <section>
-    
-  <div id="introCard">
-    <div class="intro-text">
-      <div class="kecil">WALIMATULURUS</div><br><br>
-      <div class="besar"><span>Isma</span><span>&amp;</span><span>Fikri</span></div><br><br>
-      <div class="tarikh">03 JANUARI 2026 | SABTU</div>
-      <div class="lokasi">WHITE HOUSE EVENT SPACE, DUNGUN</div>
-    </div>
-  </div>
-</section>
-
-
-
-    <section>
-  <div id="mainSectionInner">
-
-
-    <!-- SEMUA kandungan anda di sini -->
-    <p>Assalamualaikum &amp; Salam Sejahtera</p>
-    <div class="parent-name"><strong>HJ. MOHD SHUHAIMI BIN DAUD</strong></div>
-    <div class="parent-name"><strong>&amp;</strong></div>
-    <div class="parent-name"><strong>HJH. NOR AZILA BINTI RAMLI</strong></div>
-    <p>Dengan penuh kesyukuran kami menjemput,<br>Dato’ | Datin | Tuan | Puan | Encik | Cik<br>ke majlis perkahwinan puteri kami</p><br>
-
-    <div class="couple-name"><strong>SITI ISMAHANI IZZATI BINTI MOHD SHUHAIMI</strong></div>
-    <div class="parent-name"><strong>&amp;</strong></div>
-    <div class="couple-name"><strong>MUHAMMAD FIKRI BIN ZUHAIRI</strong></div>
-
-    <h2>Butiran Majlis</h2>
-    <p><strong>Tarikh:</strong> Sabtu, 03 Januari 2026<br><strong>Masa:</strong> 11:00 pagi - 4:00 petang<br><strong>Tempat:</strong> White House Event Space Dungun</p>
-
-    <h2>Atur Cara</h2>
-    <p><strong>Jamuan:</strong> 11.00 AM – 4.00 PM<br><strong>Ketibaan Pengantin:</strong> 12.00 PM</p>
-
-    <h2>Gambar</h2>
-    <div class="photo-slider" aria-label="Galeri Gambar">
-      <button class="slider-btn prev" aria-label="Sebelum">‹</button>
-      <div class="slides">
-        <div class="slide-item"><img src="https://i.postimg.cc/C5BpCwGw/Whats-App-Image-2025-11-08-at-7-40-37-PM.jpg" alt="Foto 1" loading="lazy" decoding="async"></div>
-        <div class="slide-item"><img src="https://i.postimg.cc/RVtzNVCT/Whats-App-Image-2025-11-08-at-7-42-44-PM.jpg" alt="Foto 2" loading="lazy" decoding="async"></div>
+      <div class="content fullwidth" id="introCard" aria-hidden="false">
+        <div class="intro-text">
+          <div class="kecil">WALIMATULURUS</div><br><br><br>
+          <div class="besar"><span>Isma</span><span>&amp;</span><span>Fikri</span></div><br><br><br>
+          <div class="tarikh">03 JANUARI 2026 | SABTU</div>
+          <div class="lokasi">WHITE HOUSE EVENT SPACE, DUNGUN</div>
+        </div>
       </div>
-      <button class="slider-btn next" aria-label="Seterusnya">›</button>
-      <div class="slider-dots" aria-hidden="true"></div>
-    </div>
+    </section>
 
-    <div id="imageModal" class="modal" aria-hidden="true">
-      <span class="close" id="imageModalClose" role="button" aria-label="Tutup">&times;</span>
-      <img class="modal-content" id="modalImg" alt="Preview" />
-    </div>
+    <section>
+      <div id="mainCard" aria-hidden="false" style="background:transparent; box-shadow:none; border-radius:16px; margin:20px; max-width:420px;">
+        <p>Assalamualaikum &amp; Salam Sejahtera</p>
+        <div class="parent-name"><strong>HJ. MOHD SHUHAIMI BIN DAUD</strong></div>
+        <div class="parent-name"><strong>&amp;</strong></div>
+        <div class="parent-name"><strong>HJH. NOR AZILA BINTI RAMLI</strong></div>
+        <p>Dengan penuh kesyukuran kami menjemput,<br>Dato’ | Datin | Tuan | Puan | Encik | Cik<br>ke majlis perkahwinan puteri kami</p><br>
+        <div class="couple-name"><strong>SITI ISMAHANI IZZATI BINTI MOHD SHUHAIMI</strong></div>
+        <div class="parent-name"><strong>&amp;</strong></div>
+        <div class="couple-name"><strong>MUHAMMAD FIKRI BIN ZUHAIRI</strong></div>
 
-    <h2>Ucapan</h2>
-    <div class="bubbles" id="bubblesContainer" tabindex="0" aria-live="polite" aria-label="Senarai ucapan"></div>
+        <h2>Butiran Majlis</h2>
+        <p><strong>Tarikh:</strong> Sabtu, 03 Januari 2026<br><strong>Masa:</strong> 11:00 pagi - 4:00 petang<br><strong>Tempat:</strong> White House Event Space Dungun</p>
 
-    <h2>COUNTING DAYS</h2>
-    <div class="countdown" id="countdown">
-      <div><div class="num" id="days">0</div><div class="lbl">Hari</div></div>
-      <div><div class="num" id="hours">0</div><div class="lbl">Jam</div></div>
-      <div><div class="num" id="mins">0</div><div class="lbl">Minit</div></div>
-      <div><div class="num" id="secs">0</div><div class="lbl">Saat</div></div>
-    </div>
+        <h2>Atur Cara</h2>
+        <p><strong>Jamuan:</strong> 11.00 AM – 4.00 PM<br><strong>Ketibaan Pengantin:</strong> 12.00 PM</p>
 
-    <!-- ====== Video player: autoplay (muted) placed under countdown ====== -->
-    <div id="videoContainer" style="margin-top:12px;text-align:center;">
-      <div id="ytPlayer" style="width:100%;max-width:420px;margin:auto;height:200px;"></div>
-    </div>
+        <h2>Gambar</h2>
+        <div class="photo-slider" aria-label="Galeri Gambar">
+          <button class="slider-btn prev" aria-label="Sebelum">‹</button>
+          <div class="slides">
+            <div class="slide-item"><img src="https://i.postimg.cc/C5BpCwGw/Whats-App-Image-2025-11-08-at-7-40-37-PM.jpg" alt="Foto 1" loading="lazy" decoding="async"></div>
+            <div class="slide-item"><img src="https://i.postimg.cc/RVtzNVCT/Whats-App-Image-2025-11-08-at-7-42-44-PM.jpg" alt="Foto 2" loading="lazy" decoding="async"></div>
+           <!-- <div class="slide-item"><img src="https://i.postimg.cc/T1VPHTMh/8EC8700E-DA47-4FF0-9F84-2FCE47B1A986-1-105-c.jpg" alt="Foto 3" loading="lazy" decoding="async"></div> -->
+          </div>
+          <button class="slider-btn next" aria-label="Seterusnya">›</button>
+          <div class="slider-dots" aria-hidden="true"></div>
+        </div>
 
-    <footer>Terima kasih — Kami hargai kehadiran dan doa anda.</footer>
+        <div id="imageModal" class="modal" aria-hidden="true">
+          <span class="close" id="imageModalClose" role="button" aria-label="Tutup">&times;</span>
+          <img class="modal-content" id="modalImg" alt="Preview" />
+        </div>
 
-    <!-- dan seterusnya… semua Gambar, Ucapan, Countdown, Footer -->
+        <h2>Ucapan</h2>
+        <div class="bubbles" id="bubblesContainer" tabindex="0" aria-live="polite" aria-label="Senarai ucapan"></div>
 
-  </div>
-</section>
+        <h2>COUNTING DAYS</h2>
+        <div class="countdown" id="countdown">
+          <div><div class="num" id="days">0</div><div class="lbl">Hari</div></div>
+          <div><div class="num" id="hours">0</div><div class="lbl">Jam</div></div>
+          <div><div class="num" id="mins">0</div><div class="lbl">Minit</div></div>
+          <div><div class="num" id="secs">0</div><div class="lbl">Saat</div></div>
+        </div>
 
+        <!-- ====== Video player: autoplay (muted) placed under countdown ====== -->
+        <div id="videoContainer" style="margin-top:12px;text-align:center;">
+          <div id="ytPlayer" style="width:100%;max-width:420px;margin:auto;height:200px;"></div>
+        </div>
+        <!-- ================================================================== -->
+
+        <footer>Terima kasih — Kami hargai kehadiran dan doa anda.</footer>
+      </div>
+    </section>
   </div>
 
   <!-- contact card -->
