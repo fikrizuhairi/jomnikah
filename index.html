@@ -47,6 +47,36 @@
       object-position: center center;
       display: block;
     }
+    
+    
+
+
+/* FIXED PNG OVERLAY — sits above fixed background but behind .app/.content */
+.bg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 0;                 /* sits above .bg-video (z:-5) but below .app (z:1) */
+  pointer-events: none;
+  background-image: url("https://invitation-v2.mymawaddah.com/storage/wedapp-invitation/design/cv0005/6IHY0i1731112033501CV0005-RSVP.png");
+  background-repeat: no-repeat;
+  background-position: center top; /* adjust if you want different alignment */
+  background-size: contain;        /* fit the PNG without cropping */
+  opacity: 0.98;
+  mix-blend-mode: normal;
+  will-change: transform, opacity;
+}
+
+/* optional: size tweak for taller phones so overlay doesn't cover too much */
+@media (max-width:420px){
+  .bg-overlay { background-size: auto 60vh; background-position: center top; opacity:0.995; }
+}
+
+/* optional: desktop max width cap (avoid huge stretched PNG) */
+@media (min-width:900px){
+  .bg-overlay { background-size: contain; background-position: center top; }
+}
+
+
 
     /* ---------- MAIN APP (scrolls above fixed bg) ---------- */
     .app{ max-width:450px; margin:auto; position:relative; min-height:100vh; scroll-snap-type:y mandatory; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:140px; z-index:1; }
@@ -70,7 +100,6 @@
   background-image: 
     url("https://invitation-v2.mymawaddah.com/storage/wedapp-invitation/design/cv0005/6IHY0i1731112033501CV0005-RSVP.png"),
     url("https://invitation-v2.mymawaddah.com/storage/wedapp-invitation/design/fr0042/6jgvkT17552257093998.jpg");
-    
 
   background-position:
     center center,
@@ -86,10 +115,6 @@
 
   box-shadow: none !important;
   backdrop-filter: none !important;
-}
-
-.content.fullwidth {
-  /* kod sedia ada di sini */
 }
 
 /* ===== NAMA VERTICAL (Isma / & / Fikri) ===== */
@@ -162,11 +187,8 @@
 /* tighten vertical stack spacing if needed */
 .content.fullwidth .nama-vertical { margin: 0; }
 
-
-
-      /* respect notch/safe-area at top */
-      padding-top: calc(env(safe-area-inset-top) + 18px);
-    }
+    /* respect notch/safe-area at top */
+    /* (no extra top padding here; .content.fullwidth handles safe area) */
 
     .intro-text{ position:relative; text-align:center; color:#cc5500; z-index:2; text-shadow:2px 2px 4px rgba(0,0,0,0.25); padding-top:18px; padding-bottom:18px; }
     .intro-text .kecil{ font-family:'Playfair Display',serif; font-size:18px; color:#000; margin-bottom:6px; font-weight:400 }
@@ -327,7 +349,13 @@
   <!-- Fixed background -->
   <div class="bg-video" aria-hidden="true">
     <img src="https://invitation-v2.mymawaddah.com/storage/wedapp-invitation/design/fr0042/6jgvkT17552257093998.jpg" alt="Wedding Background" />
+    <!-- PNG overlay (fixed) — sits above background but behind all content -->
+<div class="bg-overlay" aria-hidden="true"></div>
+
   </div>
+
+  <!-- FIXED decorative overlay (above bg, above content) -->
+  <div class="bg-overlay" aria-hidden="true"></div>
 
   <!-- NEW: Mawaddah-style opening overlay -->
   <div id="openingOverlay" role="dialog" aria-label="Skrin Muka" aria-modal="true">
