@@ -26,11 +26,11 @@
       font-style: normal;
     }
 
-    /* ---------- FIXED BACKGROUND ---------- */
+    /* ---------- FIXED BACKGROUND (paling belakang) ---------- */
     .bg-video {
       position: fixed;
       inset: 0;
-      z-index: -5;
+      z-index: -5; /* paling belakang */
       pointer-events: none;
       display: flex;
       align-items: center;
@@ -39,21 +39,135 @@
       overflow: hidden;
     }
     .bg-video img {
-      max-width: 100%;
-      max-height: 100vh;
-      width: auto;
-      height: auto;
-      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       object-position: center center;
       display: block;
     }
 
-    /* ---------- MAIN APP (scrolls above fixed bg) ---------- */
-    .app{ max-width:420px; margin:auto; position:relative; min-height:100vh; scroll-snap-type:y mandatory; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:140px; z-index:1; }
-    section{ scroll-snap-align:start; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; position:relative; }
-    .content{ background:rgba(255,255,255,0.92); backdrop-filter:blur(6px); border-radius:16px; padding:24px; box-shadow:0 8px 20px rgba(0,0,0,0.05); position:relative; z-index:2; margin:20px; max-width:420px; }
+    /* PNG OVERLAY — di atas background tetapi kita akan mask lubang untuk .content */
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9; /* DIATUR: di bawah .app (10) supaya .content sentiasa di atas overlay */
+      pointer-events: none; /* jangan ganggu klik/scroll */
+      background-image: url("https://invitation-v2.mymawaddah.com/storage/wedapp-invitation/design/cv0005/6IHY0i1731112033501CV0005-RSVP.png");
+      background-repeat: no-repeat;
+      background-position: center top;
+      background-size: 450px 109vh; /* lebar 450px, tinggi ikut aspect ratio */
+      opacity: 1;
+      mix-blend-mode: normal;
+      will-change: transform, opacity;
+      transition: opacity var(--overlay-fade-ms) ease;
+      /* fallback visual in case mask not supported */
+    }
 
-    .intro-text{ position:relative; text-align:center; color:#cc5500; z-index:2; text-shadow:2px 2px 4px rgba(0,0,0,0.25); padding-top:80px; padding-bottom:40px; }
+    /* ---------- MAIN APP (scrolls above fixed bg & overlay) ---------- */
+    .app{ max-width:450px; margin:auto; position:relative; min-height:100vh; scroll-snap-type:y mandatory; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:140px; z-index:10; } /* z-index:10 supaya app berada di atas bg-video; overlay z:9 akan nampak di bawah content */
+    section{ scroll-snap-align:start; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; position:relative; }
+    /* default content box (we'll have a fullwidth intro too) */
+    .content{ background:rgba(255,255,255,0.92); backdrop-filter:blur(6px); border-radius:16px; padding:24px; box-shadow:0 8px 20px rgba(0,0,0,0.05); position:relative; z-index:11; margin:20px; max-width:420px; }
+
+    /* ===== Fullwidth intro background + FULL SCREEN HEIGHT ===== */
+    .content.fullwidth {
+      position: relative;
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      /* tinggi penuh skrin */
+      min-height: 100vh;
+      padding: calc(env(safe-area-inset-top) + 40px) 20px 50px;
+      border-radius: 0 !important;
+
+      /* 2-layer background: PNG (top) + photo (bottom) */
+      background-image:
+        url("https://invitation-v2.mymawaddah.com/storage/wedapp-invitation/design/fr0042/ctQB591755233073171FR0042(1).png"),
+        url("https://invitation-v2.mymawaddah.com/storage/wedapp-invitation/design/fr0042/6jgvkT17552257093998.jpg");
+      background-position:
+        center center,
+        center center;
+      background-repeat:
+        no-repeat,
+        no-repeat;
+      background-size:
+        contain,
+        cover;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+    }
+
+    /* ===== NAMA VERTICAL (Isma / & / Fikri) ===== */
+    .content.fullwidth .nama-vertical {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .content.fullwidth .nama-vertical .nama {
+      font-family: 'FlashFont', serif;
+      font-size: 54px;
+      font-weight: 700;
+      line-height: 1;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.45);
+    }
+
+    .content.fullwidth .nama-vertical .and {
+      font-family: 'Playfair Display', serif;
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.45);
+    }
+
+    /* remove extra spacing from .intro-text and ensure its children center */
+    .content.fullwidth .intro-text {
+      width: 100%;
+      margin: 0;
+      padding: 0;              /* padding controlled by .content.fullwidth */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;               /* space between WALIMATULURUS, names, date */
+    }
+
+    /* small header */
+    .content.fullwidth .kecil {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      letter-spacing: 2px;
+      font-weight: 600;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+      margin: 0;
+    }
+
+    /* date & venue */
+    .content.fullwidth .tarikh,
+    .content.fullwidth .lokasi {
+      margin: 0;
+      font-size: 15px;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+    }
+
+    /* respect notch/safe-area at top — small fallback */
+    @supports (padding: calc(env(safe-area-inset-top) + 40px)) {
+      /* no-op - keep using calc above */
+    }
+
+    .intro-text{ position:relative; text-align:center; z-index:12; padding-top:18px; padding-bottom:18px; }
     .intro-text .kecil{ font-family:'Playfair Display',serif; font-size:18px; color:#000; margin-bottom:6px; font-weight:400 }
     .intro-text .besar{ font-family:'FlashFont',serif; font-size:40px; font-weight:700; letter-spacing:1px; line-height:1.2 }
     .intro-text .tarikh{ font-family:'Poppins',sans-serif; font-size:16px; color:#222; margin-top:10px; font-weight:500 }
@@ -129,62 +243,9 @@
     /* ============================
        MAWADDAH-STYLE OPENING OVERLAY
        ============================ */
-    :root { --door-ms: 2500ms; } /* mirrors DOOR_ANIM_MS in JS, adjust if needed */
-    #openingOverlay {
-      position: fixed;
-      inset: 0;
-      z-index: 10060; /* topmost while visible */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.55));
-      -webkit-backdrop-filter: blur(4px);
-      backdrop-filter: blur(4px);
-      transition: opacity var(--overlay-fade-ms) ease;
-      pointer-events: auto;
-    }
-    #openingOverlay.fade-out { opacity:0; pointer-events:none; }
+    /* sync door anim var with JS DOOR_ANIM_MS (set to 2500ms below) */
+   :root { --door-ms: 2500ms; } /* mirrors DOOR_ANIM_MS in JS, adjust if needed */ #openingOverlay { position: fixed; inset: 0; z-index: 10060; /* topmost while visible */ display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.55)); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); transition: opacity var(--overlay-fade-ms) ease; pointer-events: auto; } #openingOverlay.fade-out { opacity:0; pointer-events:none; } .glass-panel { position: absolute; top: 0; height: 100vh; width: 50vw; background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); backdrop-filter: blur(8px) saturate(1.05); transition: transform 2500ms cubic-bezier(.22,.9,.2,1), opacity 600ms ease; will-change: transform; z-index:10061; } .glass-left { left: 0; transform: translateX(0); } .glass-right { right: 0; transform: translateX(0); } /* when body has opening-opened class, slide panels away */ body.opening-opened .glass-left { transform: translateX(-110%); opacity:0.98; } body.opening-opened .glass-right { transform: translateX(110%); opacity:0.98; } .opening-seal { width: 140px; height: 140px; background: rgba(255,255,255,0.95); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: "Playfair Display", serif; font-size: 34px; color: #3c4928; z-index: 10070; box-shadow: 0 14px 40px rgba(0,0,0,0.28); transition: transform 1000ms ease, opacity 1000ms ease; } body.opening-opened .opening-seal { transform: scale(0.6); opacity:0; } /* fallback rules for small screens */ @media (max-width:420px){ .opening-seal { width:110px; height:110px; font-size:26px; } .glass-panel { width:52vw; } }
 
-    .glass-panel {
-      position: absolute;
-      top: 0;
-      height: 100vh;
-      width: 50vw;
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-      backdrop-filter: blur(8px) saturate(1.05);
-      transition: transform 2500ms cubic-bezier(.22,.9,.2,1), opacity 600ms ease;
-      will-change: transform;
-      z-index:10061;
-    }
-    .glass-left  { left: 0; transform: translateX(0); }
-    .glass-right { right: 0; transform: translateX(0); }
-
-    /* when body has opening-opened class, slide panels away */
-    body.opening-opened .glass-left  { transform: translateX(-110%); opacity:0.98; }
-    body.opening-opened .glass-right { transform: translateX(110%);  opacity:0.98; }
-
-    .opening-seal {
-      width: 140px;
-      height: 140px;
-      background: rgba(255,255,255,0.95);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: "Playfair Display", serif;
-      font-size: 34px;
-      color: #3c4928;
-      z-index: 10070;
-      box-shadow: 0 14px 40px rgba(0,0,0,0.28);
-      transition: transform 1000ms ease, opacity 1000ms ease;
-    }
-    body.opening-opened .opening-seal { transform: scale(0.6); opacity:0; }
-
-    /* fallback rules for small screens */
-    @media (max-width:420px){
-      .opening-seal { width:110px; height:110px; font-size:26px; }
-      .glass-panel { width:52vw; }
-    }
 
     /* ===== Compact popup styles (RSVP / Ucapan) ===== */
     .map-popup.compact {
@@ -213,8 +274,11 @@
 <body>
   <!-- Fixed background -->
   <div class="bg-video" aria-hidden="true">
-    <img src="https://invitation-v2.mymawaddah.com/storage/wedapp-invitation/design/cv0005/6IHY0i1731112033501CV0005-RSVP.png" alt="Wedding Background" />
+    <img src="https://invitation-v2.mymawaddah.com/storage/wedapp-invitation/design/fr0042/6jgvkT17552257093998.jpg" alt="Wedding Background" />
   </div>
+
+  <!-- PNG overlay (fixed). Mask telah dibuang — overlay kini berada di bawah .app berdasarkan z-index -->
+  <div class="bg-overlay" aria-hidden="true"></div>
 
   <!-- NEW: Mawaddah-style opening overlay -->
   <div id="openingOverlay" role="dialog" aria-label="Skrin Muka" aria-modal="true">
@@ -225,17 +289,26 @@
 
   <!-- MAIN SCROLLING CONTENT -->
   <div class="app" id="appRoot" aria-hidden="false">
+    <!-- INTRO: fullwidth content panel (UPDATED) -->
     <section>
-      <div class="intro-text">
-        <div class="kecil">WALIMATULURUS</div><br><br><br>
-        <div class="besar"><span>Isma</span><span>&amp;</span><span>Fikri</span></div><br><br><br>
-        <div class="tarikh">03 JANUARI 2026 | SABTU</div>
-        <div class="lokasi">WHITE HOUSE EVENT SPACE, DUNGUN</div>
+      <div class="content fullwidth" id="introCard" aria-hidden="false">
+        <div class="intro-text">
+          <div class="kecil">WALIMATULURUS</div>
+
+          <div class="nama-vertical">
+            <div class="nama">Isma</div>
+            <div class="and">&amp;</div>
+            <div class="nama">Fikri</div>
+          </div>
+
+          <div class="tarikh">03 JANUARI 2026 | SABTU</div>
+          <div class="lokasi">WHITE HOUSE EVENT SPACE, DUNGUN</div>
+        </div>
       </div>
     </section>
 
     <section>
-      <div class="content" id="mainCard">
+      <div id="mainCard" aria-hidden="false" style="background:transparent; box-shadow:none; border-radius:16px; margin:20px; max-width:420px; z-index:11; position:relative;">
         <p>Assalamualaikum &amp; Salam Sejahtera</p>
         <div class="parent-name"><strong>HJ. MOHD SHUHAIMI BIN DAUD</strong></div>
         <div class="parent-name"><strong>&amp;</strong></div>
@@ -257,7 +330,6 @@
           <div class="slides">
             <div class="slide-item"><img src="https://i.postimg.cc/C5BpCwGw/Whats-App-Image-2025-11-08-at-7-40-37-PM.jpg" alt="Foto 1" loading="lazy" decoding="async"></div>
             <div class="slide-item"><img src="https://i.postimg.cc/RVtzNVCT/Whats-App-Image-2025-11-08-at-7-42-44-PM.jpg" alt="Foto 2" loading="lazy" decoding="async"></div>
-           <!-- <div class="slide-item"><img src="https://i.postimg.cc/T1VPHTMh/8EC8700E-DA47-4FF0-9F84-2FCE47B1A986-1-105-c.jpg" alt="Foto 3" loading="lazy" decoding="async"></div> -->
           </div>
           <button class="slider-btn next" aria-label="Seterusnya">›</button>
           <div class="slider-dots" aria-hidden="true"></div>
@@ -378,7 +450,7 @@
   const AUTO_ENTER = true;
   const OVERLAY_SHOW_MS = 1200;
   const AUTO_ENTER_DELAY_MS = 0;
-  const DOOR_ANIM_MS = 100;
+  const DOOR_ANIM_MS = 2500; // <-- padankan dengan CSS --door-anim-ms
   const OVERLAY_FADE_MS = 800;
 
   document.documentElement.style.setProperty('--overlay-fade-ms', OVERLAY_FADE_MS + 'ms');
@@ -629,15 +701,20 @@
     if (app) app.setAttribute('aria-hidden','true');
 
     function kickoff(){
+      // add class to trigger CSS transitions
       document.body.classList.add('opening-opened');
+
       if (openingOverlay) {
         openingOverlay.style.pointerEvents = 'none';
         openingOverlay.classList.add('fade-out');
       }
+
+      // restore scrolling for page content
       document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
       if (app) app.setAttribute('aria-hidden','false');
 
+      // remove overlay after animations finished
       const safeRemoveDelay = Math.max(DOOR_ANIM_MS, OVERLAY_FADE_MS) + 120;
       setTimeout(()=>{ try{ openingOverlay && openingOverlay.remove(); }catch(e){} }, safeRemoveDelay);
     }
@@ -749,5 +826,6 @@
 
 })();
 </script>
+
 </body>
 </html>
