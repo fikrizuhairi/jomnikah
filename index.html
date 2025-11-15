@@ -243,70 +243,55 @@
     /* ============================
        MAWADDAH-STYLE OPENING OVERLAY
        ============================ */
-     /* ---------- ENTRY OVERLAY + DOOR ANIMATION ---------- */
-    #entryOverlay {
-      position:fixed;
-      inset:0;
-      z-index:100000;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.55));
-      -webkit-backdrop-filter: blur(2px);
+    :root { --door-ms: 2500ms; } /* mirrors DOOR_ANIM_MS in JS, adjust if needed */
+    #openingOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10060; /* topmost while visible */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.55));
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
+      transition: opacity var(--overlay-fade-ms) ease;
+      pointer-events: auto;
     }
-    #entryOverlay .center {
-      text-align:center;
-      color:#fff;
-      padding:18px;
-      max-width:92%;
-    }
-    #entryOverlay h1{font-family:'Playfair Display',serif;font-size:28px;margin-bottom:6px}
-    #entryOverlay p{opacity:0.95;margin-bottom:14px}
-    #enterBtn {
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      background:var(--accent);
-      color:#fff;
-      padding:12px 18px;
-      border-radius:10px;
-      font-weight:700;
-      cursor:pointer;
-      border:none;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-      transform: translateY(0);
-      transition: transform 200ms ease;
-    }
-    #enterBtn:active{ transform: translateY(2px); }
-
-    .door {
-      position:fixed;
-      top:0;
-      height:100vh;
-      width:50vw;
-      z-index:100001;
-      background: linear-gradient(180deg, rgba(10,8,6,0.98), rgba(30,24,20,0.95));
-      box-shadow: inset 0 0 80px rgba(0,0,0,0.25);
-      transform-origin: left center;
-      transition: transform 4500ms cubic-bezier(.22,.9,.2,1), opacity 600ms ease;
+    .glass-panel {
+      position: absolute;
+      top: 0;
+      height: 100vh;
+      width: 50vw;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      backdrop-filter: blur(8px) saturate(1.05);
+      transition: transform 2500ms cubic-bezier(.22,.9,.2,1), opacity 600ms ease;
       will-change: transform;
+      z-index:10061;
     }
-    .door.right { right:0; left:auto; transform-origin: right center; }
-    .door.left { left:0; }
+    .glass-left  { left: 0; transform: translateX(0); }
+    .glass-right { right: 0; transform: translateX(0); }
 
-    .door .panel-deco { position:absolute; inset:0; background-image: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02)); pointer-events:none; }
+    .opening-seal {
+      width: 140px;
+      height: 140px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Playfair Display", serif;
+      font-size: 34px;
+      color: #3c4928;
+      z-index: 10070;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.28);
+      transition: transform 1000ms ease, opacity 1000ms ease;
+    }
+    body.opening-opened .opening-seal { transform: scale(0.6); opacity:0; }
 
-    body:not(.entered) .door.left { transform: translateX(0) rotateY(0deg); }
-    body:not(.entered) .door.right { transform: translateX(0) rotateY(0deg); }
-
-    body.entered .door.left { transform: translateX(-110vw) rotateY(-8deg); opacity:0.98; }
-    body.entered .door.right { transform: translateX(110vw) rotateY(8deg); opacity:0.98; }
-
-    #entryOverlay.hidden { opacity:0; transition: opacity 400ms ease 400ms; pointer-events:none; }
-
+    /* fallback rules for small screens */
     @media (max-width:420px){
-      .intro-text .besar{font-size:32px}
-      #entryOverlay h1{font-size:22px}
+      .opening-seal { width:110px; height:110px; font-size:26px; }
+      .glass-panel { width:52vw; }
     }
 
     /* ===== Compact popup styles (RSVP / Ucapan) ===== */
