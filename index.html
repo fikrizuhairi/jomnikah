@@ -243,7 +243,9 @@
     /* ============================
        MAWADDAH-STYLE OPENING OVERLAY
        ============================ */
-    :root { --door-ms: 2500ms; } /* mirrors DOOR_ANIM_MS in JS, adjust if needed */
+    /* sync door anim var with JS DOOR_ANIM_MS (set to 2500ms below) */
+    :root { --door-anim-ms: 2500ms; } /* ubah jika anda mahu kelajuan lain */
+
     #openingOverlay {
       position: fixed;
       inset: 0;
@@ -256,6 +258,7 @@
       backdrop-filter: blur(4px);
       transition: opacity var(--overlay-fade-ms) ease;
       pointer-events: auto;
+      opacity: 1;
     }
     .glass-panel {
       position: absolute;
@@ -264,12 +267,13 @@
       width: 50vw;
       background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
       backdrop-filter: blur(8px) saturate(1.05);
-      transition: transform 2500ms cubic-bezier(.22,.9,.2,1), opacity 600ms ease;
+      transition: transform var(--door-anim-ms) cubic-bezier(.22,.9,.2,1), opacity 600ms ease;
       will-change: transform;
       z-index:10061;
+      transform: translateX(0);
     }
-    .glass-left  { left: 0; transform: translateX(0); }
-    .glass-right { right: 0; transform: translateX(0); }
+    .glass-left  { left: 0;  }
+    .glass-right { right: 0;  }
 
     .opening-seal {
       width: 140px;
@@ -287,6 +291,20 @@
       transition: transform 1000ms ease, opacity 1000ms ease;
     }
     body.opening-opened .opening-seal { transform: scale(0.6); opacity:0; }
+
+    /* ---- Pembetulan animasi 'pintu' ---- */
+    /* apabila 'opened' ditambah, gerakkan panel keluar skrin dan sembunyikan overlay */
+    body.opening-opened .glass-left  { transform: translateX(-110%); } /* tolak ke kiri */
+    body.opening-opened .glass-right { transform: translateX(110%);  } /* tolak ke kanan */
+
+    body.opening-opened #openingOverlay {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--overlay-fade-ms) ease;
+    }
+
+    /* fallback class fade-out (JS menambah fade-out juga) */
+    #openingOverlay.fade-out { opacity: 0; pointer-events: none; }
 
     /* fallback rules for small screens */
     @media (max-width:420px){
@@ -497,7 +515,7 @@
   const AUTO_ENTER = true;
   const OVERLAY_SHOW_MS = 1200;
   const AUTO_ENTER_DELAY_MS = 0;
-  const DOOR_ANIM_MS = 100;
+  const DOOR_ANIM_MS = 2500; // <-- padankan dengan CSS --door-anim-ms
   const OVERLAY_FADE_MS = 800;
 
   document.documentElement.style.setProperty('--overlay-fade-ms', OVERLAY_FADE_MS + 'ms');
@@ -748,15 +766,20 @@
     if (app) app.setAttribute('aria-hidden','true');
 
     function kickoff(){
+      // add class to trigger CSS transitions
       document.body.classList.add('opening-opened');
+
       if (openingOverlay) {
         openingOverlay.style.pointerEvents = 'none';
         openingOverlay.classList.add('fade-out');
       }
+
+      // restore scrolling for page content
       document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
       if (app) app.setAttribute('aria-hidden','false');
 
+      // remove overlay after animations finished
       const safeRemoveDelay = Math.max(DOOR_ANIM_MS, OVERLAY_FADE_MS) + 120;
       setTimeout(()=>{ try{ openingOverlay && openingOverlay.remove(); }catch(e){} }, safeRemoveDelay);
     }
