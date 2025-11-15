@@ -46,26 +46,25 @@
       display: block;
     }
 
-    /* PNG OVERLAY — di atas background tetapi BAWAH beberapa modal.
-       **PERUBAHAN**: z-index dinaikkan supaya overlay berada *di atas* content (.content)
-       tetapi masih di bawah overlay-level components (openingOverlay, bottom-bar, modals).
-    */
+    /* PNG OVERLAY — di atas background tetapi kita akan mask lubang untuk .content */
     .bg-overlay {
       position: fixed;
       inset: 0;
-      z-index: 12; /* DIUBAH: sebelumnya 5 — sekarang overlay berada di ATAS content (z:11) */
-      pointer-events: none; /* kekalkan supaya overlay tidak menghalang klik/scroll */
+      z-index: 9; /* DIATUR: di bawah .app (10) supaya .content sentiasa di atas overlay */
+      pointer-events: none; /* jangan ganggu klik/scroll */
       background-image: url("https://invitation-v2.mymawaddah.com/storage/wedapp-invitation/design/cv0005/6IHY0i1731112033501CV0005-RSVP.png");
       background-repeat: no-repeat;
       background-position: center top;
-      background-size: contain; /* fit the PNG supaya tidak terlalu besar */
+      background-size: 450px 109vh; /* lebar 450px, tinggi ikut aspect ratio */
       opacity: 1;
       mix-blend-mode: normal;
       will-change: transform, opacity;
+      transition: opacity var(--overlay-fade-ms) ease;
+      /* fallback visual in case mask not supported */
     }
 
     /* ---------- MAIN APP (scrolls above fixed bg & overlay) ---------- */
-    .app{ max-width:450px; margin:auto; position:relative; min-height:100vh; scroll-snap-type:y mandatory; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:140px; z-index:10; } /* z-index:10 supaya app berada di atas bg-video; overlay z:12 akan nampak di atas content */
+    .app{ max-width:450px; margin:auto; position:relative; min-height:100vh; scroll-snap-type:y mandatory; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:140px; z-index:10; } /* z-index:10 supaya app berada di atas bg-video; overlay z:9 akan nampak di bawah content */
     section{ scroll-snap-align:start; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; position:relative; }
     /* default content box (we'll have a fullwidth intro too) */
     .content{ background:rgba(255,255,255,0.92); backdrop-filter:blur(6px); border-radius:16px; padding:24px; box-shadow:0 8px 20px rgba(0,0,0,0.05); position:relative; z-index:11; margin:20px; max-width:420px; }
@@ -325,7 +324,7 @@
     <img src="https://invitation-v2.mymawaddah.com/storage/wedapp-invitation/design/fr0042/6jgvkT17552257093998.jpg" alt="Wedding Background" />
   </div>
 
-  <!-- PNG overlay (fixed) — ATAS background, sekarang DI ATAS content supaya content lalu bawah overlay -->
+  <!-- PNG overlay (fixed). Mask akan digunakan untuk buat hole di atas .content -->
   <div class="bg-overlay" aria-hidden="true"></div>
 
   <!-- NEW: Mawaddah-style opening overlay -->
@@ -378,7 +377,6 @@
           <div class="slides">
             <div class="slide-item"><img src="https://i.postimg.cc/C5BpCwGw/Whats-App-Image-2025-11-08-at-7-40-37-PM.jpg" alt="Foto 1" loading="lazy" decoding="async"></div>
             <div class="slide-item"><img src="https://i.postimg.cc/RVtzNVCT/Whats-App-Image-2025-11-08-at-7-42-44-PM.jpg" alt="Foto 2" loading="lazy" decoding="async"></div>
-           <!-- <div class="slide-item"><img src="https://i.postimg.cc/T1VPHTMh/8EC8700E-DA47-4FF0-9F84-2FCE47B1A986-1-105-c.jpg" alt="Foto 3" loading="lazy" decoding="async"></div> -->
           </div>
           <button class="slider-btn next" aria-label="Seterusnya">›</button>
           <div class="slider-dots" aria-hidden="true"></div>
@@ -870,5 +868,104 @@
 
 })();
 </script>
+
+<!-- =========================
+     SVG MASK: buat lubang di overlay untuk .content
+     (letakkan sebagai skrip berasingan supaya mudah maintain)
+     ========================= -->
+<script>
+(function(){
+  const overlay = document.querySelector('.bg-overlay');
+  if(!overlay) return;
+
+  // create an <svg> mask container in DOM (hidden)
+  let maskSvg = document.getElementById('overlayMaskSvg');
+  if(!maskSvg){
+    maskSvg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    maskSvg.setAttribute('id','overlayMaskSvg');
+    maskSvg.setAttribute('aria-hidden','true');
+    maskSvg.style.position = 'absolute';
+    maskSvg.style.width = '0';
+    maskSvg.style.height = '0';
+    document.body.appendChild(maskSvg);
+  }
+
+  // create mask element
+  let mask = document.getElementById('overlayMask');
+  if(!mask){
+    mask = document.createElementNS('http://www.w3.org/2000/svg','mask');
+    mask.setAttribute('id','overlayMask');
+    mask.setAttribute('maskUnits','userSpaceOnUse');
+    maskSvg.appendChild(mask);
+  }
+
+  function updateMask(){
+    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+
+    // clear mask children
+    while(mask.firstChild) mask.removeChild(mask.firstChild);
+
+    // full white rect (overlay visible everywhere by default)
+    const full = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    full.setAttribute('x', 0);
+    full.setAttribute('y', 0);
+    full.setAttribute('width', vw);
+    full.setAttribute('height', vh);
+    full.setAttribute('fill', 'white'); // white = show overlay
+    mask.appendChild(full);
+
+    // targets to exclude (hole)
+    const targets = Array.from(document.querySelectorAll('.content, .content.fullwidth, #introCard, #mainCard')).filter(Boolean);
+
+    targets.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      // skip offscreen
+      if (r.bottom < 0 || r.top > vh || r.right < 0 || r.left > vw) return;
+
+      const pad = 10; // padding around hole; ubah mengikut citarasa
+      const x = Math.max(0, Math.floor(r.left - pad));
+      const y = Math.max(0, Math.floor(r.top - pad));
+      const w = Math.min(vw - x, Math.ceil(r.width + pad*2));
+      const h = Math.min(vh - y, Math.ceil(r.height + pad*2));
+
+      const hole = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      hole.setAttribute('x', x);
+      hole.setAttribute('y', y);
+      hole.setAttribute('width', w);
+      hole.setAttribute('height', h);
+      hole.setAttribute('rx', 14); // rounded corners
+      hole.setAttribute('fill', 'black'); // black = transparent area (hole)
+      mask.appendChild(hole);
+    });
+
+
+    
+      // fallback: if mask unsupported, ensure overlay is below content (already z-index:9)
+      console.warn('mask apply failed', e);
+    }
+  }
+
+  // initial update once layout stabilises
+  setTimeout(updateMask, 60);
+
+  // update on scroll/resize
+  let rafId = null;
+  function requestUpdate(){
+    if(rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(updateMask);
+  }
+  window.addEventListener('scroll', requestUpdate, {passive:true});
+  window.addEventListener('resize', requestUpdate, {passive:true});
+
+  // observe DOM changes affecting layout
+  const mo = new MutationObserver(requestUpdate);
+  mo.observe(document.body, { childList:true, subtree:true, attributes:true });
+
+  // expose function to call manually if needed
+  window.updateOverlayMask = updateMask;
+})();
+</script>
+
 </body>
 </html>
